@@ -44,20 +44,20 @@ options(scipen = 999)
 #filter climate dataset for february minimum temperature
 feb_min_temps <- climate_data %>%
   filter(month == 2) %>% 
-  group_by(year) %>% 
+  group_by(wy) %>% 
   summarise(feb_min_temp_c = min(tmin_c))
 
 #filter climate dataset for february precipitation 
 jan_precip <- climate_data %>% 
   filter(month == 1) %>%
-  group_by(year) %>% 
+  group_by(wy) %>% 
   summarise(total_jan_precip_mm = sum(precip))
 ```
 
 # Summarize Results
 
 ```{r}
-years_list <- jan_precip$year
+years_list <- jan_precip$wy
 anomaly <- c()
 
 for (i in 1:length(years_list)){
@@ -66,7 +66,25 @@ for (i in 1:length(years_list)){
   
 }
 
-cbind(years_list, anomaly)
+anomaly_df <- as.data.frame(cbind(years_list, 
+                                  anomaly,
+                                  jan_precip$total_jan_precip_mm,
+                                  feb_min_temps$feb_min_temp_c))
+
+colnames(anomaly_df) <- c("years", "anomaly", "ppt", "temp")
+
+anomaly_df %>% 
+  ggplot(aes(x = years)) +
+  geom_line(aes(y = anomaly, color = "Almond Yield Anomaly"),
+            lwd = 1) +
+  geom_line(aes(y = ppt, color = "Total Monthly Precipitation"),
+            lwd = 1) +
+  xlab("Years") +
+  ylab("Anomaly (tons/acre)") +
+  scale_y_continuous(sec.axis = sec_axis(trans = ~.*1,
+                                         name = "Precipitation (mm)")) +
+  ggtitle("Almond Yield Anomaly (1989-2010)") +
+  theme_light()
 ```
 
 # Summary of Findings 
