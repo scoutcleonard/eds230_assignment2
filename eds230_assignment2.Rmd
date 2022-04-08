@@ -27,6 +27,8 @@ for (i in packages) {
     require(i,character.only=TRUE)
   }
 }
+
+source(here("R", "almond_yield.R"))
 ```
  
 # Read in Climate Data
@@ -43,16 +45,30 @@ climate_data <- read_delim(here("data", "clim.txt")) %>%
 
 ```{r}
 #filter climate dataset for february minimum temperature
-feb_min_temp <- climate_data %>% 
-  filter(month == 2)
+feb_min_temps <- climate_data %>%
+  filter(month == 2) %>% 
+  group_by(year) %>% 
+  summarise(feb_min_temp_c = min(tmin_c))
 
 #filter climate dataset for february precipitation 
 jan_precip <- climate_data %>% 
-  filter(month == 1)
-  
+  filter(month == 1) %>%
+  group_by(year) %>% 
+  summarise(total_jan_precip_mm = sum(precip))
 ```
 
 # Summarize Results
+
+```{r}
+years_list <- jan_precip$year
+anomaly <- c()
+
+for (i in 1:length(years_list)){
+  
+  anomaly[i] <- almond_yield(precip = jan_precip$total_jan_precip_mm[i], temp = feb_min_temps$feb_min_temp_c[i])
+  
+}
+```
 
 # Summary of Findings 
 
