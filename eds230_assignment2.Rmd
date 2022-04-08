@@ -1,0 +1,39 @@
+---
+title: 'EDS 230/ESM232: Assignment 2'
+author: "Roshni Katrak-Adefowora, Scout Leonard, Nikole Vannest"
+date: '`r format(Sys.time(), "%m/%d/%Y")`'
+output: 
+  pdf_document:
+    toc: false
+    number_sections: yes
+header-includes:
+  - \setlength{\parindent}{1em}
+  - \usepackage{float}
+---
+
+```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#load packages
+
+# load packages
+packages=c("here")
+
+for (i in packages) {
+  if (require(i,character.only=TRUE)==FALSE) {
+    install.packages(i,repos='http://cran.us.r-project.org')
+  }
+  else {
+    require(i,character.only=TRUE)
+  }
+}
+```
+
+# Function
+
+# Read in Climate Data
+
+# Summarize Results
+
+# Summary of Findings 
+
