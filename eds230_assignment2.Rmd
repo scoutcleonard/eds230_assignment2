@@ -14,8 +14,6 @@ header-includes:
 ```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-#load packages
-
 # load packages
 packages=c("here")
 
@@ -30,7 +28,7 @@ for (i in packages) {
 ```
 
 # Function
-
+ 
 # Read in Climate Data
 
 # Summarize Results
