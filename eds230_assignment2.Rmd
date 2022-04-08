@@ -31,14 +31,14 @@ for (i in packages) {
 source(here("R", "almond_yield.R"))
 ```
  
-## Read in Climate Data
+# Read in Climate Data
 
 ```{r}
 climate_data <- read.table(here("data", "clim.txt"))
 options(scipen = 999)
 ```
 
-## Subset Climate Data
+# Subset Climate Data
 
 ```{r}
 #filter climate dataset for february minimum temperature
@@ -54,7 +54,7 @@ jan_precip <- climate_data %>%
   summarise(total_jan_precip_mm = sum(precip))
 ```
 
-## Summarize Results
+# Summarize Results
 
 ```{r}
 years_list <- jan_precip$wy
@@ -78,9 +78,9 @@ colnames(anomaly_df) <- c("years", "anomaly", "ppt", "temp")
 
 anomaly_df %>% 
   ggplot(aes(x = years)) +
-  geom_line(aes(y = anomaly, color = "Almond Yield Anomaly"),
+  geom_line(aes(y = anomaly, color = "Almond Yield Anomaly (tons/acre)"),
             lwd = 1) +
-  geom_line(aes(y = ppt, color = "Total January Precipitation"),
+  geom_line(aes(y = ppt, color = "Total January Precipitation (mm)"),
             lwd = 1) +
   xlab("Years") +
   ylab("Anomaly (tons/acre)") +
@@ -99,7 +99,7 @@ anomaly_df %>%
 ```{r Figure 2.}
 anomaly_df %>%
   ggplot(aes(x = years)) +
-  geom_line(aes(y = anomaly, color = "Almond Yield Anomaly"),
+  geom_line(aes(y = anomaly, color = "Almond Yield Anomaly (tons/acre)"),
             lwd = 1) +
   geom_line(aes(y = temp*100, color = "Minimum Temperature (C)"),
             lwd = 1) +
@@ -115,11 +115,11 @@ anomaly_df %>%
         axis.title.y.right = element_text(color = "lightskyblue3"))
 ```
   
-**Figure 2.**  Almond Yield Anomalies compared to total January precipitation from the years 1989 to 2010 using data provided by Dr. Naomi Tague (ESM 232/EDS 230) and modeled using equations from published paper Lobell et al. 2006. The red line indicates the yield anomalies for each year modeled and the blue line describes the total precipitation in January for each year. 
+**Figure 2.**  Almond Yield Anomalies compared to minimum February temperature (C) from the years 1989 to 2010 using data provided by Dr. Naomi Tague (ESM 232/EDS 230) and modeled using equations from published paper Lobell et al. 2006. The red line indicates the yield anomalies for each year modeled and the blue line describes the minimum temperature in February for each year.
 
-## Summary of Findings
+# Summary of Findings
   
-When calculating the anomalies in almond yield based on Lobel et al. 2006 from climate data provided by Dr. Naomi Tague, we found that the largest anomaly was in `r anomaly_df %>% max(anomaly) %>% select(year)` and has a value of `r max(anomaly_df$anomaly)` tons/acre. We included the total January precipitation values in this graph and found they follow a similar trend. In `r anomaly_df %>% max(anomaly) %>% select(year)` the total January precipitation was `r max(anomaly_df$precip)`. We also visualized the minimum February temperature in comparison with the 
+When calculating the anomalies in almond yield based on Lobel et al. 2006 from climate data provided by Dr. Naomi Tague, we found that the largest anomaly was in `r anomaly_df[which(anomaly_df[, "anomaly"] == max(anomaly_df$anomaly)), "years"]` and has a value of `r round(max(anomaly_df$anomaly),3)` tons/acre. We included the total January precipitation values in this graph and found they follow a similar trend. In `r anomaly_df[which(anomaly_df[, "ppt"] == max(anomaly_df$ppt)), "years"]` the total January precipitation was `r round(max(anomaly_df$ppt),3)` mm. We also visualized the minimum February temperature in comparison with the yield anomalies (Figure 2.) and found that it had a similar trend but was not quite as visually compelling as Figure 1. 
 
 
 
