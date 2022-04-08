@@ -16,7 +16,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # load packages
 packages=c("here",
-           "readr")
+           "readr",
+           "tidyverse")
 
 for (i in packages) {
   if (require(i,character.only=TRUE)==FALSE) {
@@ -27,15 +28,29 @@ for (i in packages) {
   }
 }
 ```
-
-# Function
  
 # Read in Climate Data
 
 ```{r}
-climate_data <- read_delim(here("data", "clim.txt"))
+climate_data <- read_delim(here("data", "clim.txt")) %>% 
+  rename(date = day,
+         day = month,
+         month = year,
+         year = wy)
 ```
 
+# Subset Climate Data
+
+```{r}
+#filter climate dataset for february minimum temperature
+feb_min_temp <- climate_data %>% 
+  filter(month == 2)
+
+#filter climate dataset for february precipitation 
+jan_precip <- climate_data %>% 
+  filter(month == 1)
+  
+```
 
 # Summarize Results
 
