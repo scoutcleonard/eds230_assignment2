@@ -34,11 +34,8 @@ source(here("R", "almond_yield.R"))
 # Read in Climate Data
 
 ```{r}
-climate_data <- read_delim(here("data", "clim.txt")) %>% 
-  rename(date = day,
-         day = month,
-         month = year,
-         year = wy)
+climate_data <- read.table(here("data", "clim.txt"))
+options(scipen = 999)
 ```
 
 # Subset Climate Data
@@ -68,6 +65,8 @@ for (i in 1:length(years_list)){
   anomaly[i] <- almond_yield(precip = jan_precip$total_jan_precip_mm[i], temp = feb_min_temps$feb_min_temp_c[i])
   
 }
+
+cbind(years_list, anomaly)
 ```
 
 # Summary of Findings 
