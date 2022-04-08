@@ -15,7 +15,8 @@ header-includes:
 knitr::opts_chunk$set(echo = TRUE)
 
 # load packages
-packages=c("here")
+packages=c("here",
+           "readr")
 
 for (i in packages) {
   if (require(i,character.only=TRUE)==FALSE) {
@@ -32,7 +33,7 @@ for (i in packages) {
 # Read in Climate Data
 
 ```{r}
-climate_data <- read.csv(here("data"))
+climate_data <- read_delim(here("data", "clim.txt"))
 ```
 
 
