@@ -45,7 +45,7 @@ options(scipen = 999)
 feb_min_temps <- climate_data %>%
   filter(month == 2) %>% 
   group_by(wy) %>% 
-  summarise(feb_min_temp_c = min(tmin_c))
+  summarise(feb_min_temp_c = mean(tmin_c))
 
 #filter climate dataset for february precipitation 
 jan_precip <- climate_data %>% 
