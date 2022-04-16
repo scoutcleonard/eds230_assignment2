@@ -60,11 +60,45 @@ for (i in 1:length(years_list)){
   
 }
 
+anomaly_df <- as.data.frame(cbind(years_list, 
+                                  anomaly,
+                                  jan_precip$total_jan_precip_mm,
+                                  feb_min_temps$feb_min_temp_c))
+
 ```
 
 # Almond Profit Model
 
 ```{r profit}
-source()
+source(here("R", "profit.R"))
+
+# Historical prices of almonds (lbs)
+prices <- read.table(here("data", "hist_price.txt"), header = T)
+
+# Convert lbs to tons
+prices$value_tons <- prices$Value_lbs * 2000
+
+# run model with average price
+# (Anomaly isn't actual yield bc it has negative values, how do we want to spin this?)
+
+money <- profit(yield = anomaly, price = mean(prices$value_tons))
+
+# create sensitivity analysis with range of prices from prices data frame?
+
+
 ```
 
+
+```{r plot data}
+# preliminary plot
+
+money_df <- as.data.frame(cbind(years_list, 
+                                money,
+                                anomaly))
+
+money_df %>% ggplot(aes(x = years_list)) +
+  geom_point(aes(y = money)) +
+  geom_line(aes(y = money)) 
+```
+
+Sources: US Department of Agriculture: USDA Farm Price Received
