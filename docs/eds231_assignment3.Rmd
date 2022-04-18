@@ -76,7 +76,8 @@ source(here("R", "profit.R"))
 
 # Historical prices of almonds (lbs)
 prices <- read.table(here("data", "hist_price.txt"), 
-                     header = T) 
+                     header = T) %>% 
+  filter(!Date %in% c(1996, 1997, 2011:2020))
 
 # Convert lbs to tons
 prices$value_tons <- prices$Value_lbs * 2000
@@ -109,10 +110,11 @@ money_df %>% ggplot(aes(x = years_list)) +
   geom_point(aes(y = money)) +
   geom_line(aes(y = money)) + 
   theme_minimal() +
-  labs(title = "California Yearly Almond Profits (1989 - 2010)",
+  labs(title = "California Yearly Almond Profits Per Acre (1989 - 2010)",
        x = "Year",
        y = "Profit ($)") +
-  theme(plot.title = element_text(hjust = 0.5, size = 15))
+  theme(plot.title = element_text(hjust = 0.5, size = 15))+
+  scale_y_continuous(labels = scales::comma)
 ```
 
 Sources: US Department of Agriculture: USDA Farm Price Received
