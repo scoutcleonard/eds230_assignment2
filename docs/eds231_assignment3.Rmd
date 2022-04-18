@@ -69,7 +69,11 @@ anomaly_df <- as.data.frame(cbind(years_list,
 
 # Almond Profit Model
 
-[Basis for the 1.05 tons/acre average annual yield value.](https://apps1.cdfa.ca.gov/FertilizerResearch/docs/Almond_Production_CA.pdf)
+In the code chunk below, we complete an informal sensitivity analysis of almond yield profit using at least 2 parameter. The parameters included in our profit model include **average almond yield** `average_yield` in tons per acre, **price** `price` in U.S. dollars, the average price of almonds per pound for a given year, and **anomaly** `anomaly`, the almond yield anomaly in tons per acre, as generated from the R script for our almond yield anomaly function, `almond_yield.R`. 
+
+[Basis for the 1.05 average annual almond yield in tons per acre value comes from UC Davis researchers Daniel Geisseler and William R. Horwath in collaboration with the California Department of Food and Agriculture.](https://apps1.cdfa.ca.gov/FertilizerResearch/docs/Almond_Production_CA.pdf)
+
+The average price of almonds is data from the US Department of Agriculture: USDA Farm Price Received.
 
 ```{r profit}
 source(here("R", "profit.R"))
@@ -116,5 +120,3 @@ money_df %>% ggplot(aes(x = years_list)) +
   theme(plot.title = element_text(hjust = 0.5, size = 15))+
   scale_y_continuous(labels = scales::comma)
 ```
-
-Sources: US Department of Agriculture: USDA Farm Price Received
