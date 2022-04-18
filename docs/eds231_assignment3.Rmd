@@ -1,6 +1,6 @@
 ---
-title: "Assignment 3"
-author: "Scout Leonard"
+title: "EDS 230/ESM232: Assignment 3"
+author: "Roshni Katrak-Adefowora, Scout Leonard, Nikole Vannest"
 date: '2022-04-14'
 output: html_document
 ---
@@ -69,19 +69,28 @@ anomaly_df <- as.data.frame(cbind(years_list,
 
 # Almond Profit Model
 
+[Basis for the 1.05 tons/acre average annual yield value.](https://apps1.cdfa.ca.gov/FertilizerResearch/docs/Almond_Production_CA.pdf)
+
 ```{r profit}
 source(here("R", "profit.R"))
 
 # Historical prices of almonds (lbs)
-prices <- read.table(here("data", "hist_price.txt"), header = T)
+prices <- read.table(here("data", "hist_price.txt"), 
+                     header = T) 
 
 # Convert lbs to tons
 prices$value_tons <- prices$Value_lbs * 2000
 
+#add column with average yield
+prices <- prices %>% 
+  mutate(average_yield = 1.05)
+
 # run model with average price
 # (Anomaly isn't actual yield bc it has negative values, how do we want to spin this?)
 
-money <- profit(yield = anomaly, price = mean(prices$value_tons))
+money <- profit(anomaly = anomaly, 
+                price = mean(prices$value_tons),
+                average_yield = prices$average_yield)
 
 # create sensitivity analysis with range of prices from prices data frame?
 

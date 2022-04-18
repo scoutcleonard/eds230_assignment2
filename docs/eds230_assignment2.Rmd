@@ -114,7 +114,7 @@ anomaly_df %>%
   theme(axis.text.y.right = element_text(color = "lightskyblue3"),
         axis.title.y.right = element_text(color = "lightskyblue3"))
 ```
-  
+
 **Figure 2.**  Almond Yield Anomalies compared to minimum February temperature (C) from the years 1989 to 2010 using data provided by Dr. Naomi Tague (ESM 232/EDS 230) and modeled using equations from published paper Lobell et al. 2006. The red line indicates the yield anomalies for each year modeled and the blue line describes the minimum temperature in February for each year.
 
 # Summary of Findings

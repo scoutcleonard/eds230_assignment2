@@ -1,13 +1,17 @@
 #' Almond Profit Function
 #'
 #' This function calculates the profit generated from almond yield
-#' @param yield List of yearly yields from almond_yield function (tons)
+#' @param average_yield List of yearly yields from almond_yield function (tons)
 #' @param price Average price in ($/ton)
+#' @param anomaly almond anomaly output from almond_yield function (tons/acre)
 #' @return yearly profit ($)
 #' 
 #' Equation
 
-profit <- function(yield, price){
-  money <- yield * price
+profit <- function(anomaly, average_yield, price){
+  
+  money <- (average_yield + anomaly) * price
+  
   return(money)
+  
 }
