@@ -67,7 +67,7 @@ anomaly_df <- as.data.frame(cbind(years_list,
 
 ```
 
-# Almond Profit Model
+# Informal Sensitivity Analysis: Almond Profit Model
 
 In the code chunk below, we complete an informal sensitivity analysis of almond yield profit using at least 2 parameter. The parameters included in our profit model include **average almond yield** `average_yield` in tons per acre, **price** `price` in U.S. dollars, the average price of almonds per pound for a given year, and **anomaly** `anomaly`, the almond yield anomaly in tons per acre, as generated from the R script for our almond yield anomaly function, `almond_yield.R`. 
 
@@ -106,10 +106,12 @@ money <- profit(anomaly = anomaly,
 ```{r plot data}
 # preliminary plot
 
+## create data frame of years, profit, and anomaly values
 money_df <- as.data.frame(cbind(years_list, 
                                 money,
                                 anomaly))
 
+## plot profit per acre time series 
 money_df %>% ggplot(aes(x = years_list)) +
   geom_point(aes(y = money)) +
   geom_line(aes(y = money)) + 
@@ -119,4 +121,8 @@ money_df %>% ggplot(aes(x = years_list)) +
        y = "Profit ($)") +
   theme(plot.title = element_text(hjust = 0.5, size = 15))+
   scale_y_continuous(labels = scales::comma)
+
+# save to viz directory in repo
+ggsave("almond_profit_viz.png",
+       path = here("viz"))
 ```
