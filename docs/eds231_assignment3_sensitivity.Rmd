@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 packages=c("here",
            "readr",
            "tidyverse",
+           "ggpubr",
            "ggpubr")
 
 for (i in packages) {
@@ -74,17 +75,21 @@ anomaly_df <- as.data.frame(cbind(years_list,
 ```{r secondsensitivity}
 # generate samples for both parameters
 nsamples = 22
+
+# price in dollars per ton
 deviation = 0.15
-price_base_thresh = 2.3
+price_base_thresh = 4000
 
 price = runif(min = price_base_thresh - deviation * price_base_thresh,
               max = price_base_thresh + deviation * price_base_thresh,
               n = nsamples)
 
+#average yield
 average_yield = rnorm(mean = 1.5, 
               sd = 0.1, 
               n = nsamples)
 
+# make df of params
 parms = cbind.data.frame(price, average_yield)
 
 # use pmap 
@@ -94,27 +99,45 @@ results = parms %>%
        anomaly = data.frame(anomaly_df$anomaly))
 
 #make a list of means
-results_means <- lapply(as.data.frame(results), mean) 
+results_means <- lapply(as.data.frame(results), 
+                        mean) 
 
-results_df <- cbind(price, average_yield, results_means) %>% 
+results_df <- cbind(price, average_yield, 
+                    results_means) %>% 
   as.data.frame()
 ```
+
+The resulting dataframe, `results_df`, has 22 observations for 22 different price and average yield scenarios, and then the resulting profit. 
 
 # Visualize Results
 
 ```{r}
 #plot results
-plot_1 = ggplot(results_df, aes(x = price, 
-                                y = results_means,
-                                fill = results_means)) +
-                  geom_point()
+plot_1 = ggplot(results_df, aes(x = as.numeric(price), 
+                                y = as.numeric(results_means))) +
+                  geom_point(color = as.numeric(results_means)) +
+  labs(x = "Price of Almonds in Dollars per Ton",
+       y = "Profit in Dollars per Acre") +
+  theme_minimal()
 
-plot_2 = ggplot(results_df, aes(x = average_yield, 
-                                y = results_means)) +
-                  geom_point(color = results_means) 
+plot_2 = ggplot(results_df, aes(x = as.numeric(average_yield), 
+                                y = as.numeric(results_means))) +
+                  geom_point(color = as.numeric(results_means)) +
+  labs(x = "Yield of Almonds in Tons per Acre",
+       y = "Profit in Dollars per Acre") +
+  theme_minimal()
 
-ggarrange(plot_1, plot_2)
+profit_plots <- ggarrange(plot_1, plot_2) 
 
-plot_1
+profit_plots <- annotate_figure(profit_plots,
+                top = text_grob("Sensitivity Analysis of Almond Profit to Average Yield and Almond Price", face = "bold", size = 14))
+
+profit_plots
+```
+
+```{r}
+ggsave("profit_plots.png",
+       plot = profit_plots,
+       path = here("viz"))
 ```
 
