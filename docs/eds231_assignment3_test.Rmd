@@ -96,7 +96,11 @@ results = parms %>%
 results[[1]]
 
 length(results)
+```
 
+
+Naomi's code 
+```{r}
 # now we can extract results from the list as above
 mean_price = map_df(results,`[`, c("price")) 
 
