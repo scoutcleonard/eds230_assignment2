@@ -4,7 +4,7 @@
 #' @param precip January precipitation (mm)
 #' @param temp February minimum temperature (C)
 #' 
-almond_yield = function(precip, 
+almond_anomaly = function(precip, 
                         temp, 
                         temp_param_1 = -0.015, 
                         temp_param_2 = -0.0046, 

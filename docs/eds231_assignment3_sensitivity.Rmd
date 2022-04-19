@@ -20,7 +20,8 @@ packages=c("here",
            "readr",
            "tidyverse",
            "ggpubr",
-           "ggpubr")
+           "ggpubr",
+           "knitr")
 
 for (i in packages) {
   if (require(i,character.only=TRUE)==FALSE) {
@@ -31,7 +32,7 @@ for (i in packages) {
   }
 }
 
-source(here("R", "almond_yield.R"))
+source(here("R", "almond_anomaly.R"))
 source(here("R", "profit.R"))
 ```
 
@@ -68,7 +69,7 @@ anomaly <- c()
 
 for (i in 1:length(years_list)){
   
-  anomaly[i] <- almond_yield(precip = jan_precip$total_jan_precip_mm[i], temp = feb_min_temps$feb_min_temp_c[i])
+  anomaly[i] <- almond_anomaly(precip = jan_precip$total_jan_precip_mm[i], temp = feb_min_temps$feb_min_temp_c[i])
   
 }
 
@@ -107,18 +108,24 @@ results = parms %>%
   pmap(profit,
        anomaly = data.frame(anomaly_df$anomaly))
 
-#make a list of means
+#make a list of mean profits for each price x yield scenario
 results_means <- lapply(as.data.frame(results), 
                         mean) 
 
+# make a dataframe of each combination of params with their average profit outcome
 results_df <- cbind(price, average_yield, 
                     results_means) %>% 
   as.data.frame()
 ```
 
-The resulting dataframe, `results_df`, has 22 observations for 22 different price and average yield scenarios, and then the resulting profit. 
+The resulting dataframe, `results_df`, has 22 observations for 22 different price and average yield scenarios, and then the resulting profit outcome, in $ per acre. 
 
-# Visualize Sensitivity Analysis Results
+```{r test results_df}
+head(results_df, 5) %>% 
+  kable()
+```
+
+
 
 ```{r}
 #plot results
