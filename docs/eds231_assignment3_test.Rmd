@@ -11,7 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 # load packages
 packages=c("here",
            "readr",
-           "tidyverse")
+           "tidyverse",
+           "ggpubr")
 
 for (i in packages) {
   if (require(i,character.only=TRUE)==FALSE) {
@@ -95,24 +96,25 @@ results = parms %>%
 #make a list of means
 results_means <- lapply(as.data.frame(results), mean) 
 
-results_df <- cbind(price, average_yield, results_means)
-
-results[[1]]
-
-length(results)
+results_df <- cbind(price, average_yield, results_means) %>% 
+  as.data.frame()
 ```
 
 # Visualize Results
 
 ```{r}
-#NAMOIS
-# plot - pick on of the 2 parameter as a color
-p1 = ggplot(mean_elect, aes(ethresh, mean, col=eff))+geom_point(cex=2)+
-  labs(y="Mean Annual Electricity W", x="Threshold Radiation (kJ/m2)  \n above which energy production is more efficient")
-p2 = ggplot(mean_elect, aes(eff, mean, col=ethresh))+geom_point(cex=2)+
-  labs(y="Mean Annual Electricity W", x="Efficiency")
-ggarrange(p1,p2)
+#plot results
+plot_1 = ggplot(results_df, aes(x = price, 
+                                y = results_means,
+                                fill = results_means)) +
+                  geom_point()
 
-#OURS
+plot_2 = ggplot(results_df, aes(x = average_yield, 
+                                y = results_means)) +
+                  geom_point(color = results_means) 
+
+ggarrange(plot_1, plot_2)
+
+plot_1
 ```
 
