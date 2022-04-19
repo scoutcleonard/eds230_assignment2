@@ -72,7 +72,7 @@ anomaly_df <- as.data.frame(cbind(years_list,
 
 ```{r secondsensitivity}
 # generate samples for both parameters
-nsamples = years_list
+nsamples = 22
 deviation = 0.15
 price_base_thresh = 2.3
 
@@ -90,28 +90,29 @@ parms = cbind.data.frame(price, average_yield)
 # takes function name and then names of all parameters that don't change
 results = parms %>% 
   pmap(profit,
-       anomaly = data.frame(anomaly_df$anomaly)) #this breaks! i think... the outpt dataframe is not what i expect 
+       anomaly = data.frame(anomaly_df$anomaly))
 
+#make a list of means
+results_means <- lapply(as.data.frame(results), mean) 
+
+results_df <- cbind(price, average_yield, results_means)
 
 results[[1]]
 
 length(results)
 ```
 
+# Visualize Results
 
-Naomi's code 
 ```{r}
-# now we can extract results from the list as above
-mean_price = map_df(results,`[`, c("price")) 
-
-# and we can add the parameter values for each run
-mean_elect = cbind.data.frame(mean_elect, parms)
-
+#NAMOIS
 # plot - pick on of the 2 parameter as a color
 p1 = ggplot(mean_elect, aes(ethresh, mean, col=eff))+geom_point(cex=2)+
   labs(y="Mean Annual Electricity W", x="Threshold Radiation (kJ/m2)  \n above which energy production is more efficient")
 p2 = ggplot(mean_elect, aes(eff, mean, col=ethresh))+geom_point(cex=2)+
   labs(y="Mean Annual Electricity W", x="Efficiency")
 ggarrange(p1,p2)
+
+#OURS
 ```
 
