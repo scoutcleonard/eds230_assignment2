@@ -1,0 +1,113 @@
+---
+title: "EDS 230/ESM232: Assignment 3"
+author: "Roshni Katrak-Adefowora, Scout Leonard, Nikole Vannest"
+date: '2022-04-14'
+output: html_document
+---
+
+```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# load packages
+packages=c("here",
+           "readr",
+           "tidyverse")
+
+for (i in packages) {
+  if (require(i,character.only=TRUE)==FALSE) {
+    install.packages(i,repos='http://cran.us.r-project.org')
+  }
+  else {
+    require(i,character.only=TRUE)
+  }
+}
+
+source(here("R", "almond_yield.R"))
+source(here("R", "profit.R"))
+```
+ 
+# Read in Climate Data
+
+```{r}
+climate_data <- read.table(here("data", "clim.txt"))
+options(scipen = 999)
+```
+
+# Subset Climate Data
+
+```{r}
+#filter climate dataset for february minimum temperature
+feb_min_temps <- climate_data %>%
+  filter(month == 2) %>% 
+  group_by(wy) %>% 
+  summarise(feb_min_temp_c = mean(tmin_c))
+
+#filter climate dataset for february precipitation 
+jan_precip <- climate_data %>% 
+  filter(month == 1) %>%
+  group_by(wy) %>% 
+  summarise(total_jan_precip_mm = sum(precip))
+```
+
+# Summarize Results
+
+```{r}
+years_list <- jan_precip$wy
+anomaly <- c()
+
+for (i in 1:length(years_list)){
+  
+  anomaly[i] <- almond_yield(precip = jan_precip$total_jan_precip_mm[i], temp = feb_min_temps$feb_min_temp_c[i])
+  
+}
+
+anomaly_df <- as.data.frame(cbind(years_list, 
+                                  anomaly,
+                                  jan_precip$total_jan_precip_mm,
+                                  feb_min_temps$feb_min_temp_c))
+
+```
+
+# Second Sensitivity
+
+```{r secondsensitivity}
+# generate samples for both parameters
+nsamples = years_list
+deviation = 0.15
+price_base_thresh = 2.3
+
+price = runif(min = price_base_thresh - deviation * price_base_thresh,
+              max = price_base_thresh + deviation * price_base_thresh,
+              n = nsamples)
+
+average_yield = rnorm(mean = 1.5, 
+              sd = 0.1, 
+              n = nsamples)
+
+parms = cbind.data.frame(price, average_yield)
+
+# use pmap 
+# takes function name and then names of all parameters that don't change
+results = parms %>% 
+  pmap(profit,
+       anomaly = data.frame(anomaly_df$anomaly)) #this breaks! i think... the outpt dataframe is not what i expect 
+
+
+results[[1]]
+
+length(results)
+
+# now we can extract results from the list as above
+mean_price = map_df(results,`[`, c("price")) 
+
+# and we can add the parameter values for each run
+mean_elect = cbind.data.frame(mean_elect, parms)
+
+# plot - pick on of the 2 parameter as a color
+p1 = ggplot(mean_elect, aes(ethresh, mean, col=eff))+geom_point(cex=2)+
+  labs(y="Mean Annual Electricity W", x="Threshold Radiation (kJ/m2)  \n above which energy production is more efficient")
+p2 = ggplot(mean_elect, aes(eff, mean, col=ethresh))+geom_point(cex=2)+
+  labs(y="Mean Annual Electricity W", x="Efficiency")
+ggarrange(p1,p2)
+```
+
