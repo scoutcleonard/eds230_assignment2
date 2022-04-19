@@ -2,7 +2,14 @@
 title: "EDS 230/ESM232: Assignment 3"
 author: "Roshni Katrak-Adefowora, Scout Leonard, Nikole Vannest"
 date: '2022-04-14'
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: yes
+    smooth_scroll: true
+    theme: journal
+    highlight: textmate
+    code_folding: show
 ---
 
 ```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
@@ -27,15 +34,17 @@ for (i in packages) {
 source(here("R", "almond_yield.R"))
 source(here("R", "profit.R"))
 ```
- 
-# Read in Climate Data
+
+# Prep for Sensitivity Analysis (code from assignment 2)
+
+## Read in Climate Data
 
 ```{r}
 climate_data <- read.table(here("data", "clim.txt"))
 options(scipen = 999)
 ```
 
-# Subset Climate Data
+## Subset Climate Data
 
 ```{r}
 #filter climate dataset for february minimum temperature
@@ -51,7 +60,7 @@ jan_precip <- climate_data %>%
   summarise(total_jan_precip_mm = sum(precip))
 ```
 
-# Summarize Results
+## Summarize Results
 
 ```{r}
 years_list <- jan_precip$wy
@@ -70,7 +79,7 @@ anomaly_df <- as.data.frame(cbind(years_list,
 
 ```
 
-# Second Sensitivity
+# Run Sensitivity Analysis
 
 ```{r secondsensitivity}
 # generate samples for both parameters
@@ -109,7 +118,7 @@ results_df <- cbind(price, average_yield,
 
 The resulting dataframe, `results_df`, has 22 observations for 22 different price and average yield scenarios, and then the resulting profit. 
 
-# Visualize Results
+# Visualize Sensitivity Analysis Results
 
 ```{r}
 #plot results
